@@ -40,11 +40,11 @@
         "src/CPUUsageCollector.php"
       ],
       "metrics": [
-        "inspector.metrics"
+        "cpu.usage"
       ],
       "reset": {
-        "ticks": [
-          "inspector.metrics"
+        "totals": [
+          "cpu.usage"
         ]
       }
     }
