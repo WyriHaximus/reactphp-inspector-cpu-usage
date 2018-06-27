@@ -26,7 +26,7 @@ final class CPUUsageCollectorTest extends TestCase
         self::assertTrue(isset($result['cpu.usage']));
         self::assertCount(2, $result['cpu.usage']);
         self::assertTrue(isset($result['cpu.usage']['value']));
-        self::assertTrue($result['cpu.usage']['value'] >= 0 && $result['cpu.usage']['value'] <= 100);
+        self::assertTrue($result['cpu.usage']['value'] > 0.0);
         self::assertTrue(isset($result['cpu.usage']['time']));
         self::assertTrue($result['cpu.usage']['time'] >= $begin && $result['cpu.usage']['time'] <= $end);
     }
