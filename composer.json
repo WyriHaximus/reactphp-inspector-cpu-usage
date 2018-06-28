@@ -36,9 +36,9 @@
   },
   "extra": {
     "react-inspector": {
-      "collectors": [
-        "src/CPUUsageCollector.php"
-      ],
+      "collectors": {
+        "WyriHaximus\\React\\Inspector\\CPUUsage": "src"
+      },
       "metrics": [
         "cpu.usage"
       ],
