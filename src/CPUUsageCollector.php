@@ -1,16 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace WyriHaximus\React\Inspector\CPUUsage;
 
 use React\ChildProcess\Process;
 use React\EventLoop\LoopInterface;
-use function React\Promise\all;
-use React\Promise\PromiseInterface;
+use Rx\Observable;
+use Rx\ObservableInterface;
+use WyriHaximus\React\Inspector\CollectorInterface;
+use WyriHaximus\React\Inspector\Metric;
+use WyriHaximus\React\ProcessOutcome;
 use function React\Promise\resolve;
 use function WyriHaximus\React\childProcessPromise;
-use WyriHaximus\React\ProcessOutcome;
 
-final class CPUUsageCollector
+final class CPUUsageCollector implements CollectorInterface
 {
     /**
      * @var LoopInterface
@@ -22,6 +24,8 @@ final class CPUUsageCollector
      */
     private $pid;
 
+    private $promises = [];
+
     /**
      * @param LoopInterface $loop
      */
@@ -31,16 +35,31 @@ final class CPUUsageCollector
         $this->pid = getmypid();
     }
 
-    public function collect(): PromiseInterface
+    public function collect(): ObservableInterface
     {
-        return all([
-            'cpu.usage' => childProcessPromise($this->loop, new Process('ps -p ' . $this->pid . ' -o "pcpu" -S'))->then(function (ProcessOutcome $outcome) {
+        $promise = childProcessPromise($this->loop, new Process('ps -p ' . $this->pid . ' -o "pcpu" -S'));
+        $hash = spl_object_hash($promise);
+        $this->promises[$hash] = $promise;
+
+        return Observable::fromPromise(
+            $promise->then(function (ProcessOutcome $outcome) use ($hash) {
+                unset($this->promises[$hash]);
                 list(, $cpuUsage) = explode(PHP_EOL, $outcome->getStdout());
-                return resolve([
-                    'value' => (float)$cpuUsage,
-                    'time' => time(),
-                ]);
+
+                return resolve(new Metric(
+                    'cpu.usage',
+                    (float)$cpuUsage
+                ));
             })
-        ]);
+        );
+    }
+
+    public function cancel(): void
+    {
+        foreach ($this->promises as $hash => $promise) {
+            $promise->cancel();
+            unset($this->promises[$hash]);
+        }
+        unset($this->loop, $this->pid);
     }
 }

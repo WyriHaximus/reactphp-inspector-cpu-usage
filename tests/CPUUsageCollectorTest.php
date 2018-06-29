@@ -1,16 +1,17 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace WyriHaximus\React\Tests\Inspector\CPUUsage;
 
 use ApiClients\Tools\TestUtilities\TestCase;
 use React\EventLoop\Factory;
+use Rx\React\Promise;
 use WyriHaximus\React\Inspector\CPUUsage\CPUUsageCollector;
+use WyriHaximus\React\Inspector\Metric;
 
 final class CPUUsageCollectorTest extends TestCase
 {
     public function testCollect()
     {
-        $begin = time();
         $loop = Factory::create();
 
         $cpuUsageCollector = new CPUUsageCollector($loop);
@@ -19,15 +20,13 @@ final class CPUUsageCollectorTest extends TestCase
             // Cause some CPU usage
         }
 
-        $result = $this->await($cpuUsageCollector->collect(), $loop, 10);
-        $end = time();
+        $begin = microtime(true);
+        /** @var Metric $metric */
+        $metric = $this->await(Promise::fromObservable($cpuUsageCollector->collect()), $loop, 10);
+        $end = microtime(true);
 
-        self::assertCount(1, $result);
-        self::assertTrue(isset($result['cpu.usage']));
-        self::assertCount(2, $result['cpu.usage']);
-        self::assertTrue(isset($result['cpu.usage']['value']));
-        self::assertTrue($result['cpu.usage']['value'] > 0.0);
-        self::assertTrue(isset($result['cpu.usage']['time']));
-        self::assertTrue($result['cpu.usage']['time'] >= $begin && $result['cpu.usage']['time'] <= $end);
+        self::assertSame('cpu.usage', $metric->getKey());
+        self::assertTrue($metric->getValue() > 0.0);
+        self::assertTrue($metric->getTime() >= $begin && $metric->getTime() <= $end);
     }
 }

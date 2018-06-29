@@ -7,6 +7,50 @@
     "content-hash": "d1c98f2517cb8d97ad876fd7f8e4f3bd",
     "packages": [
         {
+            "name": "api-clients/rx",
+            "version": "2.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-api-clients/rx.git",
+                "reference": "c38d42768ebdb6e396066bc03055c3c9117bc6e9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-api-clients/rx/zipball/c38d42768ebdb6e396066bc03055c3c9117bc6e9",
+                "reference": "c38d42768ebdb6e396066bc03055c3c9117bc6e9",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0",
+                "react/promise": "^2.4",
+                "reactivex/rxphp": "^2.0"
+            },
+            "require-dev": {
+                "api-clients/test-utilities": "^3.0.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ApiClients\\Tools\\Rx\\": "src/"
+                },
+                "files": [
+                    "src/functions_include.php",
+                    "src/bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cees-Jan Kiewiet",
+                    "email": "ceesjank@gmail.com"
+                }
+            ],
+            "time": "2017-10-04T20:00:12+00:00"
+        },
+        {
             "name": "evenement/evenement",
             "version": "v3.0.1",
             "source": {
@@ -480,15 +524,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/WyriHaximus/reactphp-inspector.git",
-                "reference": "ac9ddc94f85c49fee1c7ba69f8852953b25e3e7d"
+                "reference": "da2240a4a09c7ce32a277794a881039f33bb31d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WyriHaximus/reactphp-inspector/zipball/ac9ddc94f85c49fee1c7ba69f8852953b25e3e7d",
-                "reference": "ac9ddc94f85c49fee1c7ba69f8852953b25e3e7d",
+                "url": "https://api.github.com/repos/WyriHaximus/reactphp-inspector/zipball/da2240a4a09c7ce32a277794a881039f33bb31d7",
+                "reference": "da2240a4a09c7ce32a277794a881039f33bb31d7",
                 "shasum": ""
             },
             "require": {
+                "api-clients/rx": "^2.2",
                 "php": "^7.2",
                 "reactivex/rxphp": "^2.0",
                 "wyrihaximus/get-in-packages-composer.jason": "^1.0",
@@ -501,11 +546,15 @@
                 "wyrihaximus/react-inspector-bunny": "Measure what is going through fread/fwrite calls from bunny/bunny",
                 "wyrihaximus/react-inspector-cpu-usage": "Measure the CPU usage of your application and it's child processes",
                 "wyrihaximus/react-inspector-event-loop": "Measure what is going through the event loop",
+                "wyrihaximus/react-inspector-memory-usage": "Message the memory usage of the current PHP process",
                 "wyrihaximus/react-inspector-stream": "Measure what is going through fread/fwrite calls from react/stream"
             },
             "type": "library",
             "extra": {
                 "react-inspector": {
+                    "collectors": {
+                        "WyriHaximus\\React\\Inspector\\Collector": "src/Collector"
+                    },
                     "metrics": [
                         "inspector.metrics"
                     ],
@@ -536,7 +585,7 @@
                 }
             ],
             "description": "Inspect react/* packages for metrics and other insights                               ",
-            "time": "2018-06-26T20:32:21+00:00"
+            "time": "2018-06-29T20:45:46+00:00"
         },
         {
             "name": "wyrihaximus/ticking-promise",
